@@ -105,7 +105,9 @@ const commands = {
         '🥲',
         'ánimo! 👋',
       ]
-
+      const promptPalpitation = `<p class="prompt-palpitation">&nbsp;</p>`
+      const historyElement = document.querySelector('.history')
+      historyElement.innerHTML += promptPalpitation
       // display messages with a delay using promises
       messages.reduce((promise, message) => {
         document.querySelector('#prompt').style.display = 'none'
@@ -118,7 +120,8 @@ const commands = {
               const newLineContainerElement = document.createElement('div')
               newLineContainerElement.classList = 'history-line'
               newLineContainerElement.innerText = message
-              historyElement.appendChild(newLineContainerElement)
+              // insert newLineContainerElement before promptPalpitation
+              historyElement.insertBefore(newLineContainerElement, historyElement.lastChild)
               resolve()
             }, delay)
           })
@@ -126,7 +129,7 @@ const commands = {
       }, Promise.resolve()).then(
         () => {
           document.querySelector('#prompt').style.display = 'flex'
-
+          historyElement.removeChild(historyElement.lastChild)
         }
       )
     },

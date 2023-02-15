@@ -58,3 +58,24 @@ input[type="text"] {
 .history-line {
   color: #fff;
 }
+
+.prompt-palpitation {
+  display: inline;
+  border-left: 1px solid #fff;
+  animation: palpitation 1s infinite;
+}
+
+@keyframes palpitation {
+  0% {
+    border-left-color: transparent;
+  }
+  50% {
+    border-left-color: transparent;
+  }
+  51% {
+    border-left-color: #fff;
+  }
+  100% {
+    border-left-color: #fff;
+  }
+}
