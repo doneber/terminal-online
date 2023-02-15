@@ -90,7 +90,7 @@ const commands = {
     description: ' file - Prints only index.html on the standard output'
   },
   'hola': {
-    run: () => {
+    run: (parameters) => {
       const messages = [
         'Hey!',
         '¿Cómo estás? 🙃',
@@ -114,7 +114,7 @@ const commands = {
         return promise.then(() => {
           return new Promise(resolve => {
             // random delay time
-            const delay = Math.floor(Math.random() * 400) + 2000
+            const delay = (Math.floor(Math.random() * 800) + 2000) / Number(parameters[0] || 1)
             setTimeout(() => {
               const historyElement = document.querySelector('.history')
               const newLineContainerElement = document.createElement('div')
@@ -133,7 +133,7 @@ const commands = {
         }
       )
     },
-    description: ' - Say hello and start my message for u'
+    description: '[velocity] - Say hello and start my message for you. You can control the velocity of the message with the velocity parameter, by default is \'1\', try with \'2\''
   }
 }
 
