@@ -49,6 +49,9 @@ input[type="text"] {
   font-size: inherit;
   color: #ddd;
   background: inherit;
+
+  font-size: 20px !important; /* set a fixed font size */
+  -webkit-text-size-adjust: none; /* disable automatic text size adjustment in Safari */
 }
 
 .history {
@@ -69,10 +72,10 @@ input[type="text"] {
   0% {
     border-left-color: transparent;
   }
-  50% {
+  70% {
     border-left-color: transparent;
   }
-  51% {
+  71% {
     border-left-color: #fff;
   }
   100% {
