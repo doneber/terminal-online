@@ -5,7 +5,7 @@ function init() {
   setTimeout(() => {
     document.querySelector('#prompt').innerHTML =
       `<span class="user-terminal">${user}@pc</span><span class="user-access">:<span class="user-path">~</span>$&nbsp; </span>
-    <input type="text" id="terminal-prompt" autofocus autocapitalize="off">`
+    <input type="text" id="terminal-prompt" autofocus spellcheck="false" autocapitalize="off">`
   }, 100)
 }
 
@@ -89,10 +89,21 @@ const commands = {
     },
     description: ' file - Prints only index.html on the standard output'
   },
-  'hola': {
-    run: (parameters) => {
-      const messages = [
-        // 'Hey!',
+  'dnbr': {
+    run: function (parametersArr) {
+      // recollect the parameters in the object 'ops'
+      const ops = {}
+      parametersArr.forEach((param, index) => {
+        if (this.options[param] && parametersArr[index + 1] && !this.options[parametersArr[index + 1]]) {
+          ops[param] = parametersArr[index + 1]
+        }
+      })
+      // configRender is the object that will be passed to the render function
+      const configRender = {
+        velocity: ops['-v'] || 1,
+      }
+      configRender.messages = [
+        'Hey!',
         '¿Cómo estás? 🙃',
         'Espero que bien y muy pero muy bien yupi! lorem impsum dolor asdasd asdas querty',
         '¿Qué tal el día? 📅',
@@ -105,6 +116,17 @@ const commands = {
         '🥲',
         'ánimo! 👋',
       ]
+      console.log({ ops, configRender });
+      this.render(configRender)
+    },
+    render: ({ messages = [], velocity = 1 }) => {
+      // check if velocity is a number
+      velocity = Number(velocity)
+      velocity = (isNaN(velocity)) ? 1 : velocity
+
+      // TODO: fix this error
+      // this line is to cover the error that not display the last message
+      messages.push('')
       const promptPalpitation = document.createElement('span')
       promptPalpitation.classList = 'prompt-palpitation'
       promptPalpitation.innerHTML = '&nbsp;'
@@ -118,10 +140,10 @@ const commands = {
         let delay = null
         return promise.then(() => {
           return new Promise(resolve => {
-            // delay time
-            const multiplier = Number(parameters[0] || 1)
-            delay = (((messages[index - 1]?.length || 5) * 80) / multiplier) + 1000
-
+            // calculate delay time
+            delay = (((messages[index - 1]?.length || 5) * 80) / velocity) + 1000
+            // scroll to the bottom of the terminal
+            window.scrollBy(0, 100)
             setTimeout(() => {
               const historyElement = document.querySelector('#history')
               // create a div element to add the message
@@ -145,7 +167,7 @@ const commands = {
                     setTimeout(() => {
                       lineMessageElement.innerHTML += letter
                       resolve()
-                    }, 80 / multiplier)
+                    }, 80 / velocity)
                   })
                 })
               }, Promise.resolve())
@@ -162,10 +184,12 @@ const commands = {
         }
       )
     },
-    description: '[velocity] - Say hello and start my message for you. You can control the velocity of the message with the velocity parameter, by default is \'1\', try with \'2\''
+    options: {
+      '-v': { description: ' - Custom velocity messages displayed', },
+    },
+    description: '[-v velocity]  - dnbr message for you. Velocity parameter by default is 1.'
   }
 }
-
 
 function render(commandArr) {
 
