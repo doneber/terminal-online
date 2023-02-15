@@ -166,13 +166,58 @@ function runCommand() {
   if (commands[command]) {
     commands[command].run(params)
   } else {
-    // RENDER COMMAND NOT FOUND
-    const messageElement = document.createElement('p')
-    messageElement.innerText = `${command}: command not found. Try 'help'`
-    document.querySelector('.history').appendChild(messageElement)
+    // convert commands object to array
+    const commandsArr = Object.keys(commands)
+    // find the closest command
+    const closestCommand = commandsArr.find((localCommand) => {
+      if (levenshteinDistance(localCommand, command) === 1)
+        return localCommand
+    })
+    if (closestCommand) {
+      const historyElement = document.querySelector('.history')
+      const newLineContainerElement = document.createElement('div')
+      newLineContainerElement.classList = 'history-line'
+      newLineContainerElement.innerHTML = `<p>${command}: command not found. Did you mean ${closestCommand}?</p>`
+      historyElement.appendChild(newLineContainerElement)
+      return
+    } else {
+      // RENDER COMMAND NOT FOUND
+      const messageElement = document.createElement('p')
+      messageElement.innerText = `${command}: command not found. Try 'help'`
+      document.querySelector('.history').appendChild(messageElement)
+    }
+  }
+}
+
+function levenshteinDistance(a, b) {
+  /* Calculates the distance beetween two Strings */
+  if (a.length == 0) return b.length;
+  if (b.length == 0) return a.length;
+  let matrix = [];
+  let i;
+  for (i = 0; i <= b.length; i++) {
+    matrix[i] = [i];
+  }
+  let j;
+  for (j = 0; j <= a.length; j++) {
+    matrix[0][j] = j;
+  }
+  for (i = 1; i <= b.length; i++) {
+    for (j = 1; j <= a.length; j++) {
+      if (b.charAt(i - 1) == a.charAt(j - 1)) {
+        matrix[i][j] = matrix[i - 1][j - 1];
+      } else {
+        matrix[i][j] = Math.min(
+          matrix[i - 1][j - 1] + 1,
+          Math.min(matrix[i][j - 1] + 1, matrix[i - 1][j] + 1)
+        );
+      }
+    }
   }
 
+  return matrix[b.length][a.length];
 }
+
 // if user clicks on the '.history' element, stop the propagation and focus on the input
 const historyElement = document.querySelector('.history')
 historyElement.addEventListener('click', (event) => {
