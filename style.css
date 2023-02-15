@@ -21,9 +21,11 @@ body {
 .user {
   display: inline-block;
 }
+
 .user-path {
   color: #1111ff;
 }
+
 .input-container {
   display: flex;
   height: auto;
@@ -50,8 +52,10 @@ input[type="text"] {
   color: #ddd;
   background: inherit;
 
-  font-size: 20px !important; /* set a fixed font size */
-  -webkit-text-size-adjust: none; /* disable automatic text size adjustment in Safari */
+  font-size: 20px !important;
+  /* set a fixed font size */
+  -webkit-text-size-adjust: none;
+  /* disable automatic text size adjustment in Safari */
 }
 
 .history {
@@ -63,7 +67,6 @@ input[type="text"] {
 }
 
 .prompt-palpitation {
-  display: inline;
   border-left: 1px solid #fff;
   animation: palpitation 1s infinite;
 }
@@ -72,12 +75,15 @@ input[type="text"] {
   0% {
     border-left-color: transparent;
   }
+
   70% {
     border-left-color: transparent;
   }
+
   71% {
     border-left-color: #fff;
   }
+
   100% {
     border-left-color: #fff;
   }

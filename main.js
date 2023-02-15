@@ -92,7 +92,7 @@ const commands = {
   'hola': {
     run: (parameters) => {
       const messages = [
-        'Hey!',
+        // 'Hey!',
         '¿Cómo estás? 🙃',
         'Espero que bien',
         '¿Qué tal el día? 📅',
@@ -105,25 +105,51 @@ const commands = {
         '🥲',
         'ánimo! 👋',
       ]
-      const promptPalpitation = `<p class="prompt-palpitation">&nbsp;</p>`
+      const promptPalpitation = document.createElement('span')
+      promptPalpitation.classList = 'prompt-palpitation'
+      promptPalpitation.innerHTML = '&nbsp;'
       const historyElement = document.querySelector('.history')
-      historyElement.innerHTML += promptPalpitation
+      historyElement.appendChild(promptPalpitation)
       // display messages with a delay using promises
+      let oldParant = null
+      let newParant = null
       messages.reduce((promise, message) => {
         document.querySelector('#prompt').style.display = 'none'
         return promise.then(() => {
           return new Promise(resolve => {
             // random delay time
-            const delay = (Math.floor(Math.random() * 800) + 2000) / Number(parameters[0] || 1)
+            const delay = (3000) / Number(parameters[0] || 1)
+
             setTimeout(() => {
               const historyElement = document.querySelector('.history')
               const newLineContainerElement = document.createElement('div')
+              newParant = newLineContainerElement
               newLineContainerElement.classList = 'history-line'
-              newLineContainerElement.innerText = message
-              // insert newLineContainerElement before promptPalpitation
-              historyElement.insertBefore(newLineContainerElement, historyElement.lastChild)
+              historyElement.appendChild(newLineContainerElement)
+
+              const lineMessageElement = document.createElement('span')
+              newLineContainerElement.appendChild(lineMessageElement)
+
+              if (!oldParant) newLineContainerElement.appendChild(promptPalpitation)
+              else newLineContainerElement.appendChild(oldParant.lastChild)
+
+              // add letter by letter of the message to the newLineContainerElement every 100ms
+              message.split('').reduce((promise, letter) => {
+                return promise.then(() => {
+                  return new Promise(resolve => {
+                    setTimeout(() => {
+                      lineMessageElement.innerHTML += letter
+                      resolve()
+                      console.log(',');
+                    }, 80)
+                  })
+                })
+              }, Promise.resolve())
+
+              oldParant = newParant
               resolve()
             }, delay)
+            console.log('.');
           })
         })
       }, Promise.resolve()).then(
