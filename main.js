@@ -81,7 +81,7 @@ const commands = {
 </head>
 
 <body>
-  <p>You're awesome <3 </p>
+  <p>Aquí no hay nada ${user.substring(0, 3)}. Pero buen intento 👍</p>
 </body>
 
 </html>`
@@ -102,21 +102,26 @@ const commands = {
       const configRender = {
         velocity: ops['-v'] || 1,
       }
+      // The messages of dnbr to you
       configRender.messages = [
-        'Hey!',
-        '¿Cómo estás? 🙃',
-        'Espero que bien y muy pero muy bien yupi! lorem impsum dolor asdasd asdas querty',
-        '¿Qué tal el día? 📅',
-        'Espero que genial',
-        '¿Qué tal el trabajo? 🛠',
-        'Espero que productivo',
-        '¿Qué tal el café? ☕',
-        'Espero que rico',
-        '...',
-        '🥲',
-        'ánimo! 👋',
+        `Hola ${user.substring(0, 3)}! 👋`,
+        'que tal 🙃',
+        'espero que este todo bien',
+        `sé que ya estamos en ${(new Date().getDate())} 📅`,
+        'y tampoco nos conocemos mucho ',
+        'pero me pareces una persona muy agradable',
+        'de todas formas te deseo un feliz día 🎉',
+        '🥳',
+        ' ',
+        'no tiene que ser un día "especial"',
+        'pásala muy bien',
+        'múcho ánimo!',
+        `que tengas una buena ${
+          // calculates the part of the day 
+          (new Date().getHours() < 12) ? 'mañana' : (new Date().getHours() < 18) ? 'tarde' : 'noche'
+        }`,
+        '👋'
       ]
-      console.log({ ops, configRender });
       this.render(configRender)
     },
     render: ({ messages = [], velocity = 1 }) => {
