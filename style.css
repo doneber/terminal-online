@@ -58,13 +58,6 @@ input[type="text"] {
   /* disable automatic text size adjustment in Safari */
 }
 
-.history {
-  display: block;
-}
-
-.history-line {
-  color: #fff;
-}
 
 .prompt-palpitation {
   border-left: 1px solid #fff;
@@ -78,13 +71,5 @@ input[type="text"] {
 
   70% {
     border-left-color: transparent;
-  }
-
-  71% {
-    border-left-color: #fff;
-  }
-
-  100% {
-    border-left-color: #fff;
   }
 }

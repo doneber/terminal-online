@@ -5,7 +5,7 @@ function init() {
   setTimeout(() => {
     document.querySelector('#prompt').innerHTML =
       `<span class="user-terminal">${user}@pc</span><span class="user-access">:<span class="user-path">~</span>$&nbsp; </span>
-    <input type="text" id="terminal-prompt" autofocus>`
+    <input type="text" id="terminal-prompt" autofocus autocapitalize="off">`
   }, 100)
 }
 
@@ -18,13 +18,13 @@ terminal.addEventListener('click', () => {
 })
 const commands = {
   'clear': {
-    run: () => { document.querySelector('.history').innerHTML = '' },
+    run: () => { document.querySelector('#history').innerHTML = '' },
     description: ' - Clear the terminal screen.'
   },
   'help': {
     run: () => {
       // RENDER SOMETHING
-      const historyElement = document.querySelector('.history')
+      const historyElement = document.querySelector('#history')
       const newLineContainerElement = document.createElement('div')
       newLineContainerElement.classList = 'history-line'
       // iterates over the commands map and creates a new element for each command
@@ -45,7 +45,7 @@ const commands = {
   'echo': {
     run: (texts) => {
       // RENDER SOMETHING
-      const historyElement = document.querySelector('.history')
+      const historyElement = document.querySelector('#history')
       const newElement = document.createElement('p')
       const newLineContainerElement = document.createElement('div')
       newLineContainerElement.classList = 'history-line'
@@ -58,7 +58,7 @@ const commands = {
   'ls': {
     run: () => {
       // RENDER SOMETHING
-      const historyElement = document.querySelector('.history')
+      const historyElement = document.querySelector('#history')
       const newLineContainerElement = document.createElement('div')
       newLineContainerElement.classList = 'history-line'
       newLineContainerElement.innerHTML = '<p>index.html</p>'
@@ -70,7 +70,7 @@ const commands = {
     run: (params) => {
       if (params[0] !== 'index.html') return
       // RENDER SOMETHING
-      const historyElement = document.querySelector('.history')
+      const historyElement = document.querySelector('#history')
       const newLineContainerElement = document.createElement('div')
       newLineContainerElement.classList = 'history-line'
       newLineContainerElement.innerText = `<!DOCTYPE html>
@@ -94,7 +94,7 @@ const commands = {
       const messages = [
         // 'Hey!',
         '¿Cómo estás? 🙃',
-        'Espero que bien',
+        'Espero que bien y muy pero muy bien yupi! lorem impsum dolor asdasd asdas querty',
         '¿Qué tal el día? 📅',
         'Espero que genial',
         '¿Qué tal el trabajo? 🛠',
@@ -108,28 +108,33 @@ const commands = {
       const promptPalpitation = document.createElement('span')
       promptPalpitation.classList = 'prompt-palpitation'
       promptPalpitation.innerHTML = '&nbsp;'
-      const historyElement = document.querySelector('.history')
+      const historyElement = document.querySelector('#history')
       historyElement.appendChild(promptPalpitation)
       // display messages with a delay using promises
       let oldParant = null
       let newParant = null
-      messages.reduce((promise, message) => {
+      messages.reduce((promise, message, index) => {
         document.querySelector('#prompt').style.display = 'none'
+        let delay = null
         return promise.then(() => {
           return new Promise(resolve => {
-            // random delay time
-            const delay = (3000) / Number(parameters[0] || 1)
+            // delay time
+            const multiplier = Number(parameters[0] || 1)
+            delay = (((messages[index - 1]?.length || 5) * 80) / multiplier) + 1000
 
             setTimeout(() => {
-              const historyElement = document.querySelector('.history')
+              const historyElement = document.querySelector('#history')
+              // create a div element to add the message
               const newLineContainerElement = document.createElement('div')
               newParant = newLineContainerElement
               newLineContainerElement.classList = 'history-line'
               historyElement.appendChild(newLineContainerElement)
 
+              // create a span element to add the message
               const lineMessageElement = document.createElement('span')
               newLineContainerElement.appendChild(lineMessageElement)
 
+              // add the prompt palpitation to the newLineContainerElement
               if (!oldParant) newLineContainerElement.appendChild(promptPalpitation)
               else newLineContainerElement.appendChild(oldParant.lastChild)
 
@@ -140,22 +145,20 @@ const commands = {
                     setTimeout(() => {
                       lineMessageElement.innerHTML += letter
                       resolve()
-                      console.log(',');
-                    }, 80)
+                    }, 80 / multiplier)
                   })
                 })
               }, Promise.resolve())
-
               oldParant = newParant
               resolve()
             }, delay)
-            console.log('.');
           })
         })
       }, Promise.resolve()).then(
         () => {
           document.querySelector('#prompt').style.display = 'flex'
           historyElement.removeChild(historyElement.lastChild)
+          document.querySelector('#terminal-prompt').focus()
         }
       )
     },
@@ -176,7 +179,7 @@ function render(commandArr) {
   </div><span> ${commandArr.join(' ')}</span`
 
   // Insert new line in history
-  const historyElement = document.querySelector('.history')
+  const historyElement = document.querySelector('#history')
   historyElement.appendChild(newLineContainerElement)
 
 }
@@ -203,7 +206,7 @@ function runCommand() {
         return localCommand
     })
     if (closestCommand) {
-      const historyElement = document.querySelector('.history')
+      const historyElement = document.querySelector('#history')
       const newLineContainerElement = document.createElement('div')
       newLineContainerElement.classList = 'history-line'
       newLineContainerElement.innerHTML = `<p>${command}: command not found. Did you mean ${closestCommand}?</p>`
@@ -213,7 +216,7 @@ function runCommand() {
       // RENDER COMMAND NOT FOUND
       const messageElement = document.createElement('p')
       messageElement.innerText = `${command}: command not found. Try 'help'`
-      document.querySelector('.history').appendChild(messageElement)
+      document.querySelector('#history').appendChild(messageElement)
     }
   }
 }
@@ -247,8 +250,8 @@ function levenshteinDistance(a, b) {
   return matrix[b.length][a.length];
 }
 
-// if user clicks on the '.history' element, stop the propagation and focus on the input
-const historyElement = document.querySelector('.history')
+// if user clicks on the '#history' element, stop the propagation and focus on the input
+const historyElement = document.querySelector('#history')
 historyElement.addEventListener('click', (event) => {
   event.stopPropagation()
   // document.querySelector('#terminal-prompt').focus()
