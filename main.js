@@ -129,6 +129,10 @@ const commands = {
       velocity = Number(velocity)
       velocity = (isNaN(velocity)) ? 1 : velocity
 
+      // clean history except the last command
+      const lastCommand = document.querySelector('#history').lastChild
+      document.querySelector('#history').replaceChildren(lastCommand)
+
       // TODO: fix this error
       // this line is to cover the error that not display the last message
       messages.push('')
@@ -147,8 +151,6 @@ const commands = {
           return new Promise(resolve => {
             // calculate delay time
             delay = (((messages[index - 1]?.length || 5) * 80) / velocity) + 1000
-            // scroll to the bottom of the terminal
-            window.scrollBy(0, 100)
             setTimeout(() => {
               const historyElement = document.querySelector('#history')
               // create a div element to add the message
